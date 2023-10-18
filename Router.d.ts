@@ -107,6 +107,13 @@ export function pop(): Promise<void>
  */
 export function replace(location: string): Promise<void>
 
+/**
+ * Checks if the given location can be pushed to
+ * @param location {string} - Location to check, must start with `/` or `#/`
+ * @returns {Promise<boolean>} Promise that resolves to true if all the location conditions are met
+ */
+export function canPush(location: string): Promise<boolean>
+
 /** Type for the opts parameter of the link action */
 export type LinkActionOpts = {
     /** A string to use in place of the link's href attribute. Using this allows for updating link's targets reactively. */

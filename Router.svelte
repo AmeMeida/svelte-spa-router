@@ -496,6 +496,39 @@ let lastLoc = null
 // Current object of the component loaded
 let componentObj = null
 
+/**
+* Checks if the given location can be pushed to
+* @param location {string} - Location to check, must start with `/` or `#/`
+* @returns {Promise<boolean>} Promise that resolves to true if all the location conditions are met
+*/
+export async function canPush(location) {
+    if (!location || location.length < 1 || (location.charAt(0) != '/' && location.indexOf('#/') !== 0)) {
+        throw Error('Invalid parameter location')
+    }
+
+    // Find a route matching the location
+    let i = 0
+    while (i < routesList.length) {
+        const match = routesList[i].match(location)
+        if (!match) {
+            i++
+            continue
+        }
+
+        const detail = {
+            route: routesList[i].path,
+            location: location,
+            querystring: location.split('?')[1] || '',
+            userData: routesList[i].userData,
+            params: (match && typeof match == 'object' && Object.keys(match).length) ? match : null
+        }
+
+        return routesList[i].checkConditions(detail)
+    }
+
+    return false
+}
+
 // Handle hash change events
 // Listen to changes in the $loc store and update the page
 // Do not use the $: syntax because it gets triggered by too many things
